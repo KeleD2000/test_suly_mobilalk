@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Testsuly-monitorozo</string>
+    <string name="name2">Felhasznalonév</string>
+    <string name="password2">Jelszó</string>
+    <string name="login">Bejelentkezés</string>
+    <string name="registration">Regisztárció</string>
+
+    <string name="name">Név</string>
+    <string name="password">Jelszó</string>g>
+    <string name="user_name">Felhasználónév</string>
+    <string name="email_address">E-mail cím</string>
+    <string name="password_again">Jelszó megerősítése</string>
+    <string name="cancel">Mégse</string>
+    <string name="phone_number">Telefonszám</string>
+    <string name="address">Cím</string>
+    <string name="kg">Add meg, hogy hány kg vagy</string>
+    <string name="profilod">Profilod</string>
+    <string name="profilod0">Profilod</string>
+    <string name="email">Email:</string>
+    <string name="k_rlek_add_meg_a_s_lyod">Kérlek add meg a súlyod:</string>
+    <string name="bmi">Bmi</string>
+    <string name="s_ly">Súly</string>
+</resources>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Profil">
+
+
+
+    <TextView
+        android:id="@+id/emailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email"
+        app:layout_constraintEnd_toEndOf="@id/sulyTextView"
+        app:layout_constraintStart_toStartOf="@id/sulyTextView"
+
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/sulyTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/k_rlek_add_meg_a_s_lyod"
+        app:layout_constraintBottom_toTopOf="@id/sulyEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emailTextView" />
+
+    <EditText
+        android:id="@+id/sulyEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@id/sulyTextView"
+        app:layout_constraintStart_toStartOf="@id/sulyTextView"
+        app:layout_constraintTop_toBottomOf="@id/sulyTextView" />
+
+    <Button
+        android:id="@+id/elkuldom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#8BC34A"
+        android:onClick="send"
+        android:text="Elküldés"
+        app:iconTint="#8BC34A"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sulyEditText"
+        app:layout_constraintVertical_bias="0.078" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

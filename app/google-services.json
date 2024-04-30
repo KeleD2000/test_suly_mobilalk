@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "401454970763",
+    "project_id": "mobilalktest",
+    "storage_bucket": "mobilalktest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401454970763:android:1ce0f8dfb516a67c82618e",
+        "android_client_info": {
+          "package_name": "com.example.test_suly_mon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "401454970763-db6967ihtr8ke4jo753f75vv92eng5su.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmdm5-OzJ6MPTPWTiz9PMKyTce_OA_5E4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "401454970763-db6967ihtr8ke4jo753f75vv92eng5su.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
