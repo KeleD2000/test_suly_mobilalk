@@ -2,7 +2,11 @@ package com.example.test_suly_mon;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     private static final int SECRET_KEY = 99;
 
+    // CHANNEL_ID konstans definiálása
+    private static final String CHANNEL_ID = "test_suly";
+
+    // notificationId konstans definiálása
+    private static final int notificationId = 1;
+
     EditText userNameET;
     EditText passwordET;
 
@@ -37,10 +47,24 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
 
+    private NotificationManager notificationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Értesítési csatorna létrehozása
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Értesítési csatorna regisztrálása a rendszerben
+            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
+        }
 
         userNameET = findViewById(R.id.editTextUserName);
         passwordET = findViewById(R.id.editTextPassword);
@@ -84,6 +108,19 @@ public class MainActivity extends AppCompatActivity {
                             vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
                         }
                     }
+
+                    // Notification létrehozása és megjelenítése
+                    String notificationTitle = "Bejelentkezés";
+                    String notificationText = "Sikeres bejelentkezés";
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_notification)
+                            .setContentTitle(notificationTitle)
+                            .setContentText(notificationText)
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+                    // Értesítés kibocsátása
+                    notificationManager.notify(notificationId, builder.build());
+
                     startSuly();
                 } else {
                     // Sikertelen bejelentkezés
@@ -113,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("SECRET_KEY", SECRET_KEY);
         startActivity(intent);
         Toast.makeText(this, "Sikeres bejelentkezés", Toast.LENGTH_SHORT).show();
-        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
     }
 
@@ -122,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RegisterActivity.class);
         intent.putExtra("SECRET_KEY", SECRET_KEY);
         startActivity(intent);
-        overridePendingTransition(R.anim.scale_in,R.anim.scale_out);
+        overridePendingTransition(R.anim.scale_in, R.anim.scale_out);
     }
 
     @Override

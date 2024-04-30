@@ -9,10 +9,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,16 +39,20 @@ public class startsuly extends AppCompatActivity {
     // Firebase Firestore objektum inicializálása
     private FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
 
+    private boolean adatKiirt = false;
+
     private TextView mLinearLayout;
     private String adat;
+
+    private TableLayout mTableLayout;
 
     @SuppressLint({"WrongViewCast", "MissingInflatedId"})
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startsuly);
 
-        // Felületi elemek inicializálása
-        mLinearLayout = findViewById(R.id.suly);
+        // Felületi elem inicializálása
+        mTableLayout = findViewById(R.id.tableLayout);
 
         // Az aktuálisan bejelentkezett felhasználó UID-jének lekérdezése
         String currentUserId = mAuth.getCurrentUser().getUid();
@@ -62,28 +70,50 @@ public class startsuly extends AppCompatActivity {
                         // A kg mező tartalmának lekérése a Map objektumból
                         Object kgObject = userMap.get("kg");
 
-                        if (kgObject instanceof String) {
-                            // A kg mező tartalma egyetlen String érték
-                            String kgString = (String) kgObject;
-                            TextView textView = new TextView(getApplicationContext());
-                            textView.setText(kgString);
-                            mLinearLayout.setText(kgString);
-                        } else if (kgObject instanceof ArrayList<?>) {
+                        if (kgObject instanceof ArrayList<?>) {
                             // A kg mező tartalma egy Stringeket tartalmazó ArrayList
                             ArrayList<String> kgList = (ArrayList<String>) kgObject;
-                            StringBuilder sb = new StringBuilder();
 
                             for (int i = 0; i < kgList.size(); i++) {
-                                int szam=i+1;
-                                sb.append(kgList.get(i)).append(" kg "+ szam+"feljegyezés száma \n");
-                            }
+                                String kgString = kgList.get(i);
+                                int szam = i + 1;
 
-                            adat = sb.toString();
-                            TextView textView = new TextView(getApplicationContext());
-                            textView.setText(adat);
-                            mLinearLayout.setText(adat);
-                        } else {
-                            Log.d(LOG_TAG, "Invalid kg field type");
+                                // Új TableRow létrehozása
+                                TableRow row = new TableRow(startsuly.this);
+                                row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+                                // Új TextView létrehozása és konfigurálása
+                                TextView textViewKg = new TextView(startsuly.this);
+                                textViewKg.setText(kgString);
+                                textViewKg.setGravity(Gravity.CENTER);
+                                textViewKg.setPadding(10, 10, 10, 10);
+
+                                TextView textViewSzam = new TextView(startsuly.this);
+                                textViewSzam.setText(szam + " feljegyezés");
+                                textViewSzam.setGravity(Gravity.CENTER);
+                                textViewSzam.setPadding(10, 10, 10, 10);
+
+                                // Hozzáadás a TableRow-hoz
+                                row.addView(textViewKg);
+                                row.addView(textViewSzam);
+
+                                // Új ImageView létrehozása és konfigurálása a módosítás ikonnal
+                                ImageView editIcon = new ImageView(startsuly.this);
+                                editIcon.setImageResource(R.drawable.ic_edit);
+                                editIcon.setPadding(2, 2, 2, 2);
+
+                                // Új ImageView létrehozása és konfigurálása a törlés ikonnal
+                                ImageView deleteIcon = new ImageView(startsuly.this);
+                                deleteIcon.setImageResource(R.drawable.ic_delete);
+                                deleteIcon.setPadding(2, 2, 2, 2);
+
+                                // Hozzáadás a TableRow-hoz
+                                row.addView(editIcon);
+                                row.addView(deleteIcon);
+
+                                // Hozzáadás a TableLayout-hoz
+                                mTableLayout.addView(row);
+                            }
                         }
                     } else {
                         Log.d(LOG_TAG, "No such document");
@@ -94,10 +124,6 @@ public class startsuly extends AppCompatActivity {
             }
         });
     }
-
-
-
-
 
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);

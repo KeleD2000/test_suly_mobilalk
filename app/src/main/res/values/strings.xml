@@ -19,5 +19,7 @@
     <string name="email">Email:</string>
     <string name="k_rlek_add_meg_a_s_lyod">Kérlek add meg a súlyod:</string>
     <string name="bmi">Bmi</string>
-    <string name="s_ly">Súly</string>
+    <string name="t_bla_felirat">Súlyok kilistázása feljegyzéseid alapján</string>
+    <string name="channel_name">My Notification Channel</string>
+    <string name="channel_description">This is a notification channel for my app</string>
 </resources>
