@@ -106,6 +106,12 @@ public class RegisterActivity extends AppCompatActivity {
         String passwordConfirm = passwordConfirmEditText.getText().toString();
         String[] kgArray = kg.getText().toString().split(",");
 
+        if (email.isEmpty() || password.isEmpty()) {
+            Log.e(LOG_TAG, "Az e-mail cím vagy a jelszó üres vagy null értékű.");
+            Toast.makeText(RegisterActivity.this, "Az e-mail cím vagy a jelszó üres vagy null értékű.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (password.length() < 6) {
             // Ha a jelszó hossza kevesebb, mint 6 karakter
             Log.e(LOG_TAG, "A jelszó legalább 6 karakter hosszúnak kell lennie.");
@@ -113,15 +119,10 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        if (email.isEmpty() || password.isEmpty()) {
-            Log.e(LOG_TAG, "Az e-mail cím vagy a jelszó üres vagy null értékű.");
-            Toast.makeText(RegisterActivity.this, "Az e-mail cím vagy a jelszó üres vagy null értékű.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
 
         if (!password.equals(passwordConfirm)) {
             Log.e(LOG_TAG, "Nem egyenlő a jelszó és a megerősítése.");
+            Toast.makeText(RegisterActivity.this, "Nem egyenlő a jelszó és a megerősítése.", Toast.LENGTH_SHORT).show();
             return;
         }
 

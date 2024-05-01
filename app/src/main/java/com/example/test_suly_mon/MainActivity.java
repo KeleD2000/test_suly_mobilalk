@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         String password = passwordET.getText().toString();
 
         if (userName.isEmpty()) {
-            Toast.makeText(this, "Felhasználónév megadása kötelező", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Email cím megadása kötelező", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     // Notification létrehozása és megjelenítése
-                    String notificationTitle = "Bejelentkezés";
-                    String notificationText = "Sikeres bejelentkezés";
+                    String notificationTitle = "Bejelentkezés a testsúly monitoró alkalmazásban";
+                    String notificationText = "Sikeresen bejelentkeztél, most már elkezdheted a súlyodnak a nyomon követését.";
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_notification)
                             .setContentTitle(notificationTitle)
@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, startsuly.class);
         intent.putExtra("SECRET_KEY", SECRET_KEY);
         startActivity(intent);
-        Toast.makeText(this, "Sikeres bejelentkezés", Toast.LENGTH_SHORT).show();
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
     }
