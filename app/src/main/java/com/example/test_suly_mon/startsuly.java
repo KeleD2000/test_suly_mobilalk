@@ -1,7 +1,6 @@
 package com.example.test_suly_mon;
 
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -102,6 +102,22 @@ public class startsuly extends AppCompatActivity {
                                 editIcon.setImageResource(R.drawable.ic_edit);
                                 editIcon.setPadding(2, 2, 2, 2);
 
+                                editIcon.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        // Ellenőrizd, hogy melyik sorra kattintottak, és szerezzd be a súlyt
+                                        TableRow parentRow = (TableRow) v.getParent();
+                                        TextView textViewKg = (TextView) parentRow.getChildAt(0); // Feltételezve, hogy az első gyermek a súly
+                                        String currentWeight = textViewKg.getText().toString();
+
+                                        // Intent létrehozása az EditWeightActivity-re és a súly átadása
+                                        Intent intent = new Intent(startsuly.this, EditWeightActivity.class);
+                                        intent.putExtra("currentWeight", currentWeight);
+                                        startActivity(intent);
+                                    }
+                                });
+
+
                                 // Új ImageView létrehozása és konfigurálása a törlés ikonnal
                                 ImageView deleteIcon = new ImageView(startsuly.this);
                                 deleteIcon.setImageResource(R.drawable.ic_delete);
@@ -134,23 +150,24 @@ public class startsuly extends AppCompatActivity {
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.log_out:
                 Log.d(LOG_TAG, "Logout clicked!");
                 FirebaseAuth.getInstance().signOut();
                 finish();
                 return true;
             case R.id.profil:
-                Intent intent =new Intent(this, Profil.class);
+                Intent intent = new Intent(this, Profil.class);
                 startActivity(intent);
                 return true;
             case R.id.alap:
-                Intent intent2 =new Intent(this, startsuly.class);
+                Intent intent2 = new Intent(this, startsuly.class);
                 startActivity(intent2);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         return super.onPrepareOptionsMenu(menu);
