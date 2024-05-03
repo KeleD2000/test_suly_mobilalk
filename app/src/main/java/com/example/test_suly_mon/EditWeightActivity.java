@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
+import android.view.inputmethod.EditorInfo;
+import android.text.InputType;
 
 import androidx.annotation.NonNull;
 
@@ -35,6 +37,9 @@ public class EditWeightActivity extends Activity {
         // Felhasználói felület összeállítása
         EditText editTextWeight = new EditText(this);
         editTextWeight.setHint("Új súly");
+        editTextWeight.setInputType(InputType.TYPE_CLASS_NUMBER); // Csak számokat fogad
+        editTextWeight.setImeOptions(EditorInfo.IME_ACTION_DONE); // Befejezés jelzése
+        editTextWeight.requestFocus();
         builder.setView(editTextWeight);
 
         // Mégse gomb
@@ -55,8 +60,13 @@ public class EditWeightActivity extends Activity {
                 // Új súly lekérése az EditTextből
                 String newWeight = editTextWeight.getText().toString();
 
-                // Firebase adatbázis frissítése az új súllyal
-                updateWeightInFirebase(newWeight);
+                // Sorszám lekérése az intentből
+                int rowIndex = getIntent().getIntExtra("rowIndex", -1);
+
+                if (rowIndex != -1) {
+                    // Firebase adatbázis frissítése az új súllyal
+                    updateWeightInFirebase(rowIndex, newWeight);
+                }
 
                 // Dialógus bezárása
                 dialog.dismiss();
@@ -72,7 +82,15 @@ public class EditWeightActivity extends Activity {
         dialog.show();
     }
 
-    private void updateWeightInFirebase(String newWeight) {
+    private void updateWeightInFirebase(int rowIndex, String newWeight) {
+        // Az üres stringek kezelése
+        if (newWeight.isEmpty()) {
+            // Üres string esetén a frissítés kihagyása vagy kezelése
+            // Pl.: Logolás vagy hibaüzenet megjelenítése
+            Log.d(TAG, "Új súly üres, frissítés kihagyva.");
+            return;
+        }
+
         // Az aktuális felhasználó UID-jének lekérése
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -82,7 +100,7 @@ public class EditWeightActivity extends Activity {
         // A megfelelő dokumentum referenciájának meghatározása
         DocumentReference userRef = db.collection("Users").document(currentUserId);
 
-        // A dokumentum lekérése és frissítése a kg tömb hozzáadásával
+        // A dokumentum lekérése és frissítése a kg tömb megfelelő elemének módosításával
         userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -90,30 +108,34 @@ public class EditWeightActivity extends Activity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         List<String> kgList = (List<String>) document.get("kg");
-                        kgList.add(newWeight);
-                        // A dokumentum frissítése a módosított kg tömbbel
-                        userRef.update("kg", kgList)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "Weight successfully updated!");
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w(TAG, "Error updating weight", e);
-                                    }
-                                });
+
+                        // Ellenőrizzük, hogy a rowIndex érvényes-e
+                        if (rowIndex >= 0 && rowIndex < kgList.size()) {
+                            // Az adott sorban lévő súly frissítése az új súllyal
+                            kgList.set(rowIndex, newWeight);
+
+                            // A dokumentum frissítése a módosított kg tömbbel
+                            userRef.update("kg", kgList)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d(TAG, "Súly sikeresen frissítve!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Hiba történt a súly frissítése közben", e);
+                                        }
+                                    });
+                        }
                     } else {
-                        Log.d(TAG, "No such document");
+                        Log.d(TAG, "Nincs ilyen dokumentum");
                     }
                 } else {
-                    Log.d(TAG, "get failed with ", task.getException());
+                    Log.d(TAG, "Sikertelen lekérés ", task.getException());
                 }
             }
         });
     }
-
-
 }

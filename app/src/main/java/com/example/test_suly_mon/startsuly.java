@@ -20,9 +20,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -110,9 +113,13 @@ public class startsuly extends AppCompatActivity {
                                         TextView textViewKg = (TextView) parentRow.getChildAt(0); // Feltételezve, hogy az első gyermek a súly
                                         String currentWeight = textViewKg.getText().toString();
 
-                                        // Intent létrehozása az EditWeightActivity-re és a súly átadása
+                                        // Ellenőrizd, hogy melyik sorra kattintottak, és szerezzd be a sorszámot
+                                        int rowIndex = mTableLayout.indexOfChild(parentRow);
+
+                                        // Intent létrehozása az EditWeightActivity-re és a súly és a sorszám átadása
                                         Intent intent = new Intent(startsuly.this, EditWeightActivity.class);
                                         intent.putExtra("currentWeight", currentWeight);
+                                        intent.putExtra("rowIndex", rowIndex);
                                         startActivity(intent);
                                     }
                                 });
@@ -122,7 +129,31 @@ public class startsuly extends AppCompatActivity {
                                 ImageView deleteIcon = new ImageView(startsuly.this);
                                 deleteIcon.setImageResource(R.drawable.ic_delete);
                                 deleteIcon.setPadding(2, 2, 2, 2);
+                                deleteIcon.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        TableRow parentRow = (TableRow) v.getParent();
 
+                                        TextView textViewKg = (TextView) parentRow.getChildAt(0);
+                                        String currentWeight = textViewKg.getText().toString();
+
+                                        mFirestore.collection("Users").document(currentUserId).update("kg", FieldValue.arrayRemove(currentWeight))
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d(LOG_TAG, "DocumentSnapshot successfully deleted!");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w(LOG_TAG, "Error deleting document", e);
+                                                    }
+                                                });
+
+                                        mTableLayout.removeView(parentRow);
+                                    }
+                                });
                                 // Hozzáadás a TableRow-hoz
                                 row.addView(editIcon);
                                 row.addView(deleteIcon);
