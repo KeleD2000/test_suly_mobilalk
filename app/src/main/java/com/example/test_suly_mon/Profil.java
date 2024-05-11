@@ -97,6 +97,16 @@ public class Profil extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(Profil.this, "Súly mentve!", Toast.LENGTH_SHORT).show();
                                 mSulyEditText.setText("");
+
+                                new android.os.Handler().postDelayed(
+                                        new Runnable() {
+                                            public void run() {
+                                                Intent intent = new Intent(Profil.this, startsuly.class);
+                                                startActivity(intent);
+                                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                            }
+                                        },
+                                        2000);
                             } else {
                                 Toast.makeText(Profil.this, "Hiba történt a súly mentése során.", Toast.LENGTH_SHORT).show();
                             }

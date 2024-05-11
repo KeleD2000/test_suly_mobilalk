@@ -30,11 +30,9 @@ public class EditWeightActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Felhasználói felület megjelenítése AlertDialog segítségével
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Súly módosítása");
 
-        // Felhasználói felület összeállítása
         EditText editTextWeight = new EditText(this);
         editTextWeight.setHint("Új súly");
         editTextWeight.setInputType(InputType.TYPE_CLASS_NUMBER); // Csak számokat fogad
@@ -46,9 +44,7 @@ public class EditWeightActivity extends Activity {
         builder.setNegativeButton("Mégse", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Ha a felhasználó mégsem akar menteni, egyszerűen bezárjuk az ablakot
                 dialog.dismiss();
-                // Visszatérés a startsuly tevékenységhez
                 finish();
             }
         });
@@ -57,50 +53,40 @@ public class EditWeightActivity extends Activity {
         builder.setPositiveButton("Mentés", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Új súly lekérése az EditTextből
+
                 String newWeight = editTextWeight.getText().toString();
 
-                // Sorszám lekérése az intentből
                 int rowIndex = getIntent().getIntExtra("rowIndex", -1);
 
                 if (rowIndex != -1) {
-                    // Firebase adatbázis frissítése az új súllyal
                     updateWeightInFirebase(rowIndex, newWeight);
                 }
 
-                // Dialógus bezárása
                 dialog.dismiss();
 
-                // Visszatérés a startsuly tevékenységhez
                 finish();
             }
         });
 
 
-        // A dialógus létrehozása és megjelenítése
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
     private void updateWeightInFirebase(int rowIndex, String newWeight) {
-        // Az üres stringek kezelése
         if (newWeight.isEmpty()) {
-            // Üres string esetén a frissítés kihagyása vagy kezelése
-            // Pl.: Logolás vagy hibaüzenet megjelenítése
+
             Log.d(TAG, "Új súly üres, frissítés kihagyva.");
             return;
         }
 
-        // Az aktuális felhasználó UID-jének lekérése
+
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // A Firestore adatbázis referenciájának lekérése
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // A megfelelő dokumentum referenciájának meghatározása
         DocumentReference userRef = db.collection("Users").document(currentUserId);
 
-        // A dokumentum lekérése és frissítése a kg tömb megfelelő elemének módosításával
         userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -109,12 +95,9 @@ public class EditWeightActivity extends Activity {
                     if (document.exists()) {
                         List<String> kgList = (List<String>) document.get("kg");
 
-                        // Ellenőrizzük, hogy a rowIndex érvényes-e
                         if (rowIndex >= 0 && rowIndex < kgList.size()) {
-                            // Az adott sorban lévő súly frissítése az új súllyal
                             kgList.set(rowIndex, newWeight);
 
-                            // A dokumentum frissítése a módosított kg tömbbel
                             userRef.update("kg", kgList)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override

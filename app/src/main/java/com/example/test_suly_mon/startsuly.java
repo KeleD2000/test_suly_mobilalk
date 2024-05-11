@@ -54,38 +54,35 @@ public class startsuly extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startsuly);
 
-        // Felületi elem inicializálása
         mTableLayout = findViewById(R.id.tableLayout);
 
-        // Az aktuálisan bejelentkezett felhasználó UID-jének lekérdezése
         String currentUserId = mAuth.getCurrentUser().getUid();
 
-        // Firestore lekérdezés a users kollekcióban tárolt adatok lekérdezésére
         mFirestore.collection("Users").document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        // A dokumentum tartalmának lekérése egy Map objektumba
+
                         Map<String, Object> userMap = document.getData();
 
-                        // A kg mező tartalmának lekérése a Map objektumból
+
                         Object kgObject = userMap.get("kg");
 
                         if (kgObject instanceof ArrayList<?>) {
-                            // A kg mező tartalma egy Stringeket tartalmazó ArrayList
+
                             ArrayList<String> kgList = (ArrayList<String>) kgObject;
 
                             for (int i = 0; i < kgList.size(); i++) {
                                 String kgString = kgList.get(i);
                                 int szam = i + 1;
 
-                                // Új TableRow létrehozása
+
                                 TableRow row = new TableRow(startsuly.this);
                                 row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-                                // Új TextView létrehozása és konfigurálása
+
                                 TextView textViewKg = new TextView(startsuly.this);
                                 textViewKg.setText(kgString);
                                 textViewKg.setGravity(Gravity.CENTER);
@@ -96,11 +93,9 @@ public class startsuly extends AppCompatActivity {
                                 textViewSzam.setGravity(Gravity.CENTER);
                                 textViewSzam.setPadding(10, 10, 10, 10);
 
-                                // Hozzáadás a TableRow-hoz
                                 row.addView(textViewKg);
                                 row.addView(textViewSzam);
 
-                                // Új ImageView létrehozása és konfigurálása a módosítás ikonnal
                                 ImageView editIcon = new ImageView(startsuly.this);
                                 editIcon.setImageResource(R.drawable.ic_edit);
                                 editIcon.setPadding(2, 2, 2, 2);
@@ -108,15 +103,14 @@ public class startsuly extends AppCompatActivity {
                                 editIcon.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        // Ellenőrizd, hogy melyik sorra kattintottak, és szerezzd be a súlyt
+
                                         TableRow parentRow = (TableRow) v.getParent();
-                                        TextView textViewKg = (TextView) parentRow.getChildAt(0); // Feltételezve, hogy az első gyermek a súly
+                                        TextView textViewKg = (TextView) parentRow.getChildAt(0);
                                         String currentWeight = textViewKg.getText().toString();
 
-                                        // Ellenőrizd, hogy melyik sorra kattintottak, és szerezzd be a sorszámot
+
                                         int rowIndex = mTableLayout.indexOfChild(parentRow);
 
-                                        // Intent létrehozása az EditWeightActivity-re és a súly és a sorszám átadása
                                         Intent intent = new Intent(startsuly.this, EditWeightActivity.class);
                                         intent.putExtra("currentWeight", currentWeight);
                                         intent.putExtra("rowIndex", rowIndex);
@@ -125,7 +119,6 @@ public class startsuly extends AppCompatActivity {
                                 });
 
 
-                                // Új ImageView létrehozása és konfigurálása a törlés ikonnal
                                 ImageView deleteIcon = new ImageView(startsuly.this);
                                 deleteIcon.setImageResource(R.drawable.ic_delete);
                                 deleteIcon.setPadding(2, 2, 2, 2);
@@ -154,11 +147,9 @@ public class startsuly extends AppCompatActivity {
                                         mTableLayout.removeView(parentRow);
                                     }
                                 });
-                                // Hozzáadás a TableRow-hoz
                                 row.addView(editIcon);
                                 row.addView(deleteIcon);
 
-                                // Hozzáadás a TableLayout-hoz
                                 mTableLayout.addView(row);
                             }
                         }

@@ -72,12 +72,6 @@ public class MainActivity extends AppCompatActivity {
         preferences = getSharedPreferences(PREF_KEY, MODE_PRIVATE);
         mAuth = FirebaseAuth.getInstance();
 
-        /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);*/
-
         Log.i(LOG_TAG, "onCreate");
     }
 
@@ -109,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Notification létrehozása és megjelenítése
                     String notificationTitle = "Bejelentkezés a testsúly monitoró alkalmazásban";
                     String notificationText = "Sikeresen bejelentkeztél, most már elkezdheted a súlyodnak a nyomon követését.";
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
@@ -118,18 +111,14 @@ public class MainActivity extends AppCompatActivity {
                             .setContentText(notificationText)
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-                    // Értesítés kibocsátása
                     notificationManager.notify(notificationId, builder.build());
 
                     startSuly();
                 } else {
-                    // Sikertelen bejelentkezés
                     Exception exception = task.getException();
                     if (exception instanceof FirebaseAuthInvalidCredentialsException) {
-                        // Hibás bejelentkezési adatok (pl. rossz email formátum)
                         Toast.makeText(MainActivity.this, "Nem megfelelő a felhasználónév vagy a jelszó.", Toast.LENGTH_LONG).show();
                     } else {
-                        // Egyéb hiba
                         assert exception != null;
                         Toast.makeText(MainActivity.this, "Sikertelen bejelentkezés: " + exception.getMessage(), Toast.LENGTH_LONG).show();
                     }

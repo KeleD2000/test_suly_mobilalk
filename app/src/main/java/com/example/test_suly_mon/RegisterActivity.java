@@ -112,6 +112,13 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            // Ha az e-mail cím formátuma nem megfelelő
+            Log.e(LOG_TAG, "Hibás formátumú e-mail cím.");
+            Toast.makeText(RegisterActivity.this, "Hibás formátumú e-mail cím.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (password.length() < 6) {
             // Ha a jelszó hossza kevesebb, mint 6 karakter
             Log.e(LOG_TAG, "A jelszó legalább 6 karakter hosszúnak kell lennie.");
@@ -178,8 +185,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void startSuly(/* registered used class */) {
-        Intent intent = new Intent(this, startsuly.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
